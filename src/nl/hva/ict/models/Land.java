@@ -4,16 +4,16 @@ package nl.hva.ict.models;
  * Model voor Landen
  * @author HvA FDMCI HBO-ICT
  */
-public class Landen {
+public class Land {
     private final String naam, hoofdstad;
 
-    public Landen(String naam, String hoofdstad) {
+    public Land(String naam, String hoofdstad) {
         this.naam = naam;
         this.hoofdstad = hoofdstad;
     }
 
     @Override
     public String toString() {
-        return naam + ". - De hoofdstad van " + naam + " is " + hoofdstad;
+        return String.format("%s. - De hoofdstad van %s is %s", naam, naam, hoofdstad);
     }
 }

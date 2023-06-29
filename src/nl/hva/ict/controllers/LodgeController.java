@@ -2,42 +2,73 @@ package nl.hva.ict.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import nl.hva.ict.MainApplication;
+import nl.hva.ict.data.LodgeDAO;
 import nl.hva.ict.models.Lodge;
 import nl.hva.ict.views.LodgeView;
 import nl.hva.ict.views.View;
+import static nl.hva.ict.MainApplication.getLodgeDAO;
 
 /**
  * Controller voor de Lodge view
  * @author HvA FDMCI HBO-ICT
  */
 public class LodgeController extends Controller {
-    private final LodgeView lodgeView;
+    private final LodgeView view;
+    private LodgeDAO lodgeDAO;
+    ObservableList<Lodge> lodges;
 
     public LodgeController() {
-        // Maak instance van je view
-        lodgeView = new LodgeView();
+        lodgeDAO = getLodgeDAO();
+        // Alle lodges worden opgehaald uit de database
+        lodgeDAO.read();
+        // Alle lodges worden in een observable list gezet en getoond op de lodge overzicht
+        lodges = FXCollections.observableArrayList(lodgeDAO.read());
+        view = new LodgeView();
 
-        // luister naar wijzigingen in de listview en ga naar de functie getItemsInFields() als er een item wordt geselecteerd
-        lodgeView.getLodgeViewListView().getSelectionModel().selectedItemProperty()
-                .addListener(e -> getItemsInFields());
+        // Luister naar wijzigingen in de listview en ga naar de functie getItemsInFields() als er een item wordt geselecteerd
+        view.getLodgeViewListView().getSelectionModel().selectedItemProperty().addListener(
+                e -> getItemsInFields()
+        );
+
+        view.getLodgeViewListView().setItems(lodges);
 
         // Set wat acties als op de buttons wordt geklikt
-        lodgeView.getBtSave().setOnAction(e -> save());
-        lodgeView.getBtUpdateData().setOnAction(e -> refreshData());
-        lodgeView.getBtNew().setOnAction(e -> insert());
-        lodgeView.getBtDelete().setOnAction(e -> delete());
+        view.getBtSave().setOnAction(e -> save());
+        view.getBtUpdateData().setOnAction(e -> refreshData());
+        view.getBtNew().setOnAction(e -> insert());
+        view.getBtDelete().setOnAction(e -> delete());
+    }
 
-        //haal de waardes op uit de database
-        ObservableList<Lodge> lodges = FXCollections.observableArrayList(MainApplication.getMysqlLodge().getAll());
-        lodgeView.getLodgeViewListView().setItems(lodges);
+    // Opnieuw laden van de data
+    private void refreshData() {
+        lodges.setAll(lodgeDAO.read());
     }
 
     /**
-     * Opnieuw laden van de data
+     * Set alle velden als er een object in de Listview is aangeklikt
      */
-    private void refreshData() {
-        MainApplication.getMysqlLodge().reload();
+    private void getItemsInFields() {
+        Lodge currentLodge = view.getLodgeViewListView().getSelectionModel().getSelectedItem();
+        if(currentLodge == null) {
+            return;
+        }
+        view.getTxtAccommodatieCode().setText((currentLodge.getAccommodatieCode()));
+        view.getTxtNaam().setText(currentLodge.getNaam());
+        view.getTxtStad().setText(currentLodge.getStad());
+        view.getTxtLand().setText(currentLodge.getLand());
+        view.getTxtKamertype().setText(currentLodge.getKamer());
+        view.getTxtAantalPersonen().setText((String.valueOf(currentLodge.getPersonen())));
+        view.getTxtPrijsPerWeek().setText(String.valueOf(currentLodge.getPrijsPerWeek()));
+        view.getCheckAutohuur().setSelected(currentLodge.isAutoHuren());
+    }
+
+    /**
+     * Methode om de view door te geven zoals dat ook bij OOP2 ging
+     * @return View
+     */
+    @Override
+    public View getView() {
+        return view;
     }
 
     /**
@@ -59,29 +90,5 @@ public class LodgeController extends Controller {
      */
     private void insert() {
         //Voeg toe
-    }
-
-    /**
-     * Set alle velden als er een object in de Listview is aangeklikt
-     */
-    private void getItemsInFields() {
-        Lodge currentLodge = lodgeView.getLodgeViewListView().getSelectionModel().getSelectedItem();
-        lodgeView.getTxtAccommodatieCode().setText((currentLodge.getAccommodatieCode()));
-        lodgeView.getTxtNaam().setText(currentLodge.getNaam());
-        lodgeView.getTxtStad().setText(currentLodge.getStad());
-        lodgeView.getTxtLand().setText(currentLodge.getLand());
-        lodgeView.getTxtKamertype().setText(currentLodge.getKamer());
-        lodgeView.getTxtAantalPersonen().setText((String.valueOf(currentLodge.getPersonen())));
-        lodgeView.getTxtPrijsPerWeek().setText(String.valueOf(currentLodge.getPrijsPerWeek()));
-        lodgeView.getCheckAutohuur().setSelected(currentLodge.isAutoHuren());
-    }
-
-    /**
-     * Methode om de view door te geven zoals dat ook bij OOP2 ging
-     * @return View
-     */
-    @Override
-    public View getView() {
-        return lodgeView;
     }
 }

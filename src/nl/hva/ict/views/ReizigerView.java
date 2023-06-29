@@ -9,14 +9,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import nl.hva.ict.models.Reiziger;
 
-public class ReizigersView extends View {
+public class ReizigerView extends View {
     private final GridPane rootPane;
     private TextField txtReizigersCode, txtVoornaam, txtAchternaam, txtAdres, txtPostcode, txtPlaats, txtLand;
     private ComboBox<Reiziger> comboReistSamenMet;
     private Button btDelete, btNew, btSave, btUpdateData;
     private ListView<Reiziger> reizigersViewListView;
 
-    public ReizigersView() {
+    public ReizigerView() {
         rootPane = new GridPane();
         createRoot();
     }
@@ -133,7 +133,7 @@ public class ReizigersView extends View {
         return btUpdateData;
     }
 
-    public ListView<Reiziger> getReizigersViewListView() {
+    public ListView<Reiziger> getReizigersListView() {
         return reizigersViewListView;
     }
 

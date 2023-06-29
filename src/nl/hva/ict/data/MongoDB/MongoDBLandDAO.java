@@ -1,7 +1,8 @@
 package nl.hva.ict.data.MongoDB;
 
 import nl.hva.ict.MainApplication;
-import nl.hva.ict.models.Landen;
+import nl.hva.ict.data.LandDAO;
+import nl.hva.ict.models.Land;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import java.util.ArrayList;
@@ -10,61 +11,31 @@ import java.util.List;
 import static com.mongodb.client.model.Aggregates.match;
 import static com.mongodb.client.model.Filters.eq;
 
+public class MongoDBLandDAO extends LandDAO {
+    private final MongoDB mongoDB = new MongoDB();
 
-/**
- * Landen informatie ophalen van de MongoDB
- */
-public class MongoDBLandeninformatie extends MongoDB {
-    private final List<Landen> landen;
-
-    /**
-     * Constructor
-     */
-    public MongoDBLandeninformatie() {
-        // Init arraylist
-        landen = new ArrayList<>();
+    // TODO: Implementeren van deze methode
+    @Override
+    public boolean create(Land land) {
+        return false;
     }
 
-    /**
-     * Haal alle landen op die in de arraylijst zitten
-     * @return arraylijst met landen
-     */
+    // TODO: Implementeren van deze methode
     @Override
-    public List<Landen> getAll() {
-        return landen;
-    }
-
-    /**
-     * Haal 1 object op. Niet gebruikt in deze class maar door de interface data wel verplicht
-     * @return een object
-     */
-    @Override
-    public Object get() {
+    public List<Land> read() {
         return null;
     }
 
-    /**
-     * Voeg een object toe aan de arraylist. Niet gebruikt in deze class maar door de interface data wel verplicht
-     */
+    // TODO: Implementeren van deze methode
     @Override
-    public void add(Object object) {
-
+    public boolean update(Land land) {
+        return false;
     }
 
-    /**
-     * Update een object toe aan de arraylist. Niet gebruikt in deze class maar door de interface data wel verplicht
-     */
+    // TODO: Implementeren van deze methode
     @Override
-    public void update(Object object) {
-
-    }
-
-    /**
-     * Verwijder een object toe aan de arraylist. Niet gebruikt in deze class maar door de interface data wel verplicht
-     */
-    @Override
-    public void remove(Object object) {
-
+    public boolean delete(Land land) {
+        return false;
     }
 
     /**
@@ -75,25 +46,25 @@ public class MongoDBLandeninformatie extends MongoDB {
      */
     public void wieSpreekt(String taal, boolean alleenAfrika) {
 
-       // Als je geen NoSQL server hebt opgegeven gaat de methode niet verder anders zou je een nullpointer krijgen
+        // Als je geen NoSQL server hebt opgegeven gaat de methode niet verder anders zou je een nullpointer krijgen
         if (MainApplication.getMongodbHost().equals(""))
             return;
 
-        // reset arraylist
-        this.landen.clear();
+        // Reset arraylist
+        landen.clear();
 
-        // selecteer collection
-        this.selectedCollection("landen");
+        // Selecteer collection
+        mongoDB.selectedCollection("landen");
 
         // Aggregation functie in Mongo
         Bson match = match(eq("languages.name", taal));
 
-        List<Document> results = collection.aggregate(Arrays.asList(match))
+        List<Document> results = mongoDB.collection.aggregate(Arrays.asList(match))
                 .into(new ArrayList<>());
 
         // Maak models en voeg resultaat toe aan arraylist
         for (Document land : results) {
-            this.landen.add(new Landen(land.get("name").toString(), land.get("capital").toString()));
+            landen.add(new Land(land.get("name").toString(), land.get("capital").toString()));
 
         }
     }
@@ -108,8 +79,8 @@ public class MongoDBLandeninformatie extends MongoDB {
     }
 
     /**
-     * Welke landen zijn er in welk werelddeel. Haal deze informatie uit de database
-     * . Gebruik hiervoor aggregation.
+     * Welke landen zijn er in welk werelddeel. Haal deze informatie uit de database.
+     * Gebruik hiervoor aggregation.
      * Zet het resultaat in de arraylist
      * @param werelddeel Welke valuta wil je weten
      */
@@ -120,8 +91,8 @@ public class MongoDBLandeninformatie extends MongoDB {
      * Hoeveel inwoners heeft Oost-Afrika?. Haal deze informatie uit de database en gebruik hiervoor aggregation.
      */
     public int hoeveelInwonersOostAfrika() {
-        // reset arraylist
-        this.landen.clear();
+        // Reset arraylist
+        landen.clear();
 
         // Om geen compile error te krijgen wordt tijdelijk 0 teruggegeven.
         return 0;

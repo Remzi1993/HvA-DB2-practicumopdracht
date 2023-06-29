@@ -1,17 +1,12 @@
 package nl.hva.ict.models;
 
-import nl.hva.ict.data.Identifable;
-
 /**
  * Model voor accommodatie
  * @author HvA FDMCI HBO-ICT
  */
-public class Accommodatie implements Identifable {
+public class Accommodatie {
     private String accommodatieCode, naam, stad, land, kamer;
     private int personen;
-
-    public Accommodatie() {
-    }
 
     public Accommodatie(String naam, String stad, String land) {
         this.naam = naam;
@@ -78,6 +73,6 @@ public class Accommodatie implements Identifable {
 
     @Override
     public String toString() {
-        return naam + " - " + stad + " - " + land;
+        return String.format("%s in %s - %s", naam, stad, land);
     }
 }

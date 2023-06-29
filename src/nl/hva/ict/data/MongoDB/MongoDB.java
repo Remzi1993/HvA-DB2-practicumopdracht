@@ -6,14 +6,13 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import nl.hva.ict.MainApplication;
-import nl.hva.ict.data.Data;
 import org.bson.Document;
 
 /**
  * MongoDB class die de verbinding maakt met de Mongo server
  * @author Pieter Leek
  */
-public abstract class MongoDB implements Data {
+public class MongoDB {
     protected MongoCollection<Document> collection;
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;

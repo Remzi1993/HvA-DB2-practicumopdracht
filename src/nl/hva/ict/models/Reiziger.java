@@ -1,20 +1,14 @@
 package nl.hva.ict.models;
 
-import nl.hva.ict.data.Identifable;
-
 import java.io.Serializable;
 
 /**
  * Model voor Reiziger
- *
  * @author HvA FDMCI HBO-ICT
  */
-public class Reiziger implements Identifable, Serializable {
-    private String reizigersCode, voornaam, achternaam, adres, postcode, plaats, land;
+public class Reiziger implements Serializable {
+    private String reizigerCode, voornaam, achternaam, adres, postcode, plaats, land;
     private Reiziger hoofdreiziger;
-
-    public Reiziger() {
-    }
 
     public Reiziger(String voornaam, String achternaam, String plaats) {
         this.voornaam = voornaam;
@@ -22,9 +16,20 @@ public class Reiziger implements Identifable, Serializable {
         this.plaats = plaats;
     }
 
-    public Reiziger(String reizigersCode, String voornaam, String achternaam, String adres, String postcode,
+    public Reiziger(String reizigerCode, String voornaam, String achternaam, String adres, String postcode,
+                    String plaats, String land) {
+        this.reizigerCode = reizigerCode;
+        this.voornaam = voornaam;
+        this.achternaam = achternaam;
+        this.adres = adres;
+        this.postcode = postcode;
+        this.plaats = plaats;
+        this.land = land;
+    }
+
+    public Reiziger(String reizigerCode, String voornaam, String achternaam, String adres, String postcode,
                     String plaats, String land, Reiziger hoofdreiziger) {
-        this.reizigersCode = reizigersCode;
+        this.reizigerCode = reizigerCode;
         this.voornaam = voornaam;
         this.achternaam = achternaam;
         this.adres = adres;
@@ -34,12 +39,12 @@ public class Reiziger implements Identifable, Serializable {
         this.hoofdreiziger = hoofdreiziger;
     }
 
-    public String getReizigersCode() {
-        return reizigersCode;
+    public String getReizigerCode() {
+        return reizigerCode;
     }
 
-    public void setReizigersCode(String reizigersCode) {
-        this.reizigersCode = reizigersCode;
+    public void setReizigerCode(String reizigerCode) {
+        this.reizigerCode = reizigerCode;
     }
 
     public String getVoornaam() {
@@ -100,6 +105,6 @@ public class Reiziger implements Identifable, Serializable {
 
     @Override
     public String toString() {
-        return voornaam + " " + achternaam + " woont in " + plaats;
+        return String.format("%s %s woont in %s", voornaam, achternaam, plaats);
     }
 }

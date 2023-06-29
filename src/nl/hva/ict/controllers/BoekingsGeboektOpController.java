@@ -2,39 +2,51 @@ package nl.hva.ict.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import nl.hva.ict.MainApplication;
+import nl.hva.ict.data.AccommodatieDAO;
+import nl.hva.ict.data.BoekingsoverzichtDAO;
 import nl.hva.ict.models.Accommodatie;
+import nl.hva.ict.models.Boekingsoverzicht;
 import nl.hva.ict.models.Reiziger;
 import nl.hva.ict.views.GeboektOpView;
 import nl.hva.ict.views.View;
 import java.time.LocalDate;
+import static nl.hva.ict.MainApplication.getAccommodatieDAO;
+import static nl.hva.ict.MainApplication.getBoekingsoverzichtDAO;
 
 /**
  * Controller voor de pagina geboekt.
  * @author HvA FDMCI HBO-ICT
  */
 public class BoekingsGeboektOpController extends Controller {
-    private final GeboektOpView geboektOpView;
+    private final GeboektOpView view;
+    private BoekingsoverzichtDAO boekingsoverzichtDAO;
+    private ObservableList<Boekingsoverzicht> boekingsoverzichtList;
+    private AccommodatieDAO accommodatieDAO;
+    private ObservableList<Accommodatie> accommodaties;
 
     public BoekingsGeboektOpController() {
-        // Maak instance van view.
-        geboektOpView = new GeboektOpView();
+        view = new GeboektOpView();
 
-        // Roep de DAO aan die weer alle data uit de database haalt voor de accommodatie
-        ObservableList<Accommodatie> accommodaties = FXCollections.observableArrayList(
-                MainApplication.getMysqlAccommodatie().getAll()
-        );
+        // BoekingsoverzichtDAO
+        boekingsoverzichtDAO = getBoekingsoverzichtDAO();
+        boekingsoverzichtDAO.read();
+        boekingsoverzichtList = FXCollections.observableArrayList(boekingsoverzichtDAO.read());
+
+        // AccommodatieDAO
+        accommodatieDAO = getAccommodatieDAO();
+        accommodatieDAO.read();
+        accommodaties = FXCollections.observableArrayList(accommodatieDAO.read());
 
         //voeg alles toe aan de listview
-        geboektOpView.getComboBoxAccommodaties().setItems(accommodaties);
+        view.getComboBoxAccommodaties().setItems(accommodaties);
 
         // luister naar wijzigingen in de combobox en ga naar de methode ListAccommodaties() als er iets veranderd.
-        geboektOpView.getComboBoxAccommodaties().getSelectionModel().selectedItemProperty().addListener(
+        view.getComboBoxAccommodaties().getSelectionModel().selectedItemProperty().addListener(
                 event -> ListAccommodaties()
         );
 
         // luister naar wijzigingen in de datepicker en ga naar de methode ListAccommodaties() als er iets veranderd.
-        geboektOpView.getDatePicker().valueProperty().addListener(event -> ListAccommodaties());
+        view.getDatePicker().valueProperty().addListener(event -> ListAccommodaties());
     }
 
     /**
@@ -42,20 +54,22 @@ public class BoekingsGeboektOpController extends Controller {
      */
     private void ListAccommodaties() {
         // welke accommodate is geselecteerd in de combobox?
-        if (geboektOpView.getComboBoxAccommodaties().getSelectionModel().getSelectedItem() != null) {
-            Accommodatie accommodatieSelected = (Accommodatie) geboektOpView.getComboBoxAccommodaties().getSelectionModel().getSelectedItem();
+        if (view.getComboBoxAccommodaties().getSelectionModel().getSelectedItem() != null) {
+            Accommodatie accommodatieSelected = view.getComboBoxAccommodaties().getSelectionModel().getSelectedItem();
 
             // Haal de AccommodatieCode op van het geselecteerde model
             String accommodatieCode = accommodatieSelected.getAccommodatieCode();
 
             // Welke datum is in de view geselecteerd?
-            LocalDate datum = geboektOpView.getDatePicker().getValue();
+            LocalDate datum = view.getDatePicker().getValue();
 
             // haal de info op uit de DAO
-            ObservableList<Reiziger> reizigers = FXCollections.observableArrayList(MainApplication.getMysqlBoekingsoverzicht().GeboektOp(accommodatieCode, datum));
+            ObservableList<Reiziger> reizigers = FXCollections.observableArrayList(
+                    boekingsoverzichtDAO.GeboektOp(accommodatieCode, datum)
+            );
 
             // Zet de data het in de listview
-            geboektOpView.getBoekingsOverzichtListView().setItems(reizigers);
+            view.getBoekingsOverzichtListView().setItems(reizigers);
         }
     }
 
@@ -65,6 +79,6 @@ public class BoekingsGeboektOpController extends Controller {
      */
     @Override
     public View getView() {
-        return geboektOpView;
+        return view;
     }
 }

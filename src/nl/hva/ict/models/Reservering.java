@@ -1,37 +1,36 @@
 package nl.hva.ict.models;
 
-import nl.hva.ict.data.Identifable;
 import java.io.Serializable;
 import java.sql.Date;
 
 /**
  * Model voor Reservering
+ *
  * @author HvA FDMCI HBO-ICT
  */
-public class Reservering implements Identifable, Serializable {
-    private int idReservering;
+public class Reservering implements Serializable {
+    private int reserveringId;
     private Date aankomstDatum, vertrekDatum;
     private boolean betaald;
-    private String accommodatieCode, reizigerscode;
+    private String accommodatieCode;
+    private Reiziger reiziger;
 
-    public Reservering(int idReservering, Date aankomstDatum, Date vertrekDatum, boolean betaald, String accommodatieCode, String reizigerscode) {
-        this.idReservering = idReservering;
+    public Reservering(int reserveringId, Date aankomstDatum, Date vertrekDatum, boolean betaald,
+                       String accommodatieCode, Reiziger reiziger) {
+        this.reserveringId = reserveringId;
         this.aankomstDatum = aankomstDatum;
         this.vertrekDatum = vertrekDatum;
         this.betaald = betaald;
         this.accommodatieCode = accommodatieCode;
-        this.reizigerscode = reizigerscode;
+        this.reiziger = reiziger;
     }
 
-    public Reservering() {
+    public int getReserveringId() {
+        return reserveringId;
     }
 
-    public int getIdReservering() {
-        return idReservering;
-    }
-
-    public void setIdReservering(int idReservering) {
-        this.idReservering = idReservering;
+    public void setReserveringId(int reserveringId) {
+        this.reserveringId = reserveringId;
     }
 
     public Date getAankomstDatum() {
@@ -68,13 +67,10 @@ public class Reservering implements Identifable, Serializable {
 
     @Override
     public String toString() {
-        return "Reservering{" +
-                "idReservering=" + idReservering +
-                ", aankomstDatum=" + aankomstDatum +
-                ", vertrekDatum=" + vertrekDatum +
-                ", betaald=" + betaald +
-                ", accommodatieCode='" + accommodatieCode + '\'' +
-                ", reizigerscode='" + reizigerscode + '\'' +
-                '}';
+        return String.format("""
+                    Reservering { idReservering = %d, aankomstDatum = %s, vertrekDatum = %s, betaald = %b,\s
+                    accommodatieCode = %s, reizigerCode = %s }
+                """, reserveringId, aankomstDatum, vertrekDatum, betaald, accommodatieCode, reiziger.getReizigerCode()
+        );
     }
 }

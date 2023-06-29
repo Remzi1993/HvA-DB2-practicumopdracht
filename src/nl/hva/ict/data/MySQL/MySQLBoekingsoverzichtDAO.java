@@ -1,5 +1,6 @@
 package nl.hva.ict.data.MySQL;
 
+import nl.hva.ict.data.BoekingsoverzichtDAO;
 import nl.hva.ict.models.Accommodatie;
 import nl.hva.ict.models.Boekingsoverzicht;
 import nl.hva.ict.models.Reiziger;
@@ -11,25 +12,19 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import static nl.hva.ict.MainApplication.getReizigerDAO;
 
-/**
- * DAO voor de accommodatie
- * @author HvA FDMCI HBO-ICT
- */
-public class MySQLBoekingsoverzicht extends MySQL<Boekingsoverzicht> {
-    private final List<Boekingsoverzicht> boekingsoverzicht;
+public class MySQLBoekingsoverzichtDAO extends BoekingsoverzichtDAO {
+    private final MySQL mysql = new MySQL();
 
-    public MySQLBoekingsoverzicht() {
-        boekingsoverzicht = new ArrayList<>();
-
-        // Laad bij startup
-        load();
+    // TODO: Implementeren van deze methode
+    @Override
+    public boolean create(Boekingsoverzicht boekingsoverzicht) {
+        return false;
     }
 
-    /**
-     * Doe dit bij het maken van dit object
-     */
-    private void load() {
+    @Override
+    public List<Boekingsoverzicht> read() {
         /* HvA FDMCI Databases 2 practicumopdracht - week 4B
          * Roep in deze methode de MySQL view aan die eerder is aangemaakt in de database en geef het resultaat terug
          * - Remzi Cavdar
@@ -38,15 +33,16 @@ public class MySQLBoekingsoverzicht extends MySQL<Boekingsoverzicht> {
 
         try {
             // Roep de methode aan in de parent class en geen je SQL door
-            PreparedStatement ps = getStatement(sql);
+            PreparedStatement ps = mysql.getStatement(sql);
 
-            //Voer je query uit en stop het antwoord in een result set
-            ResultSet rs = executeSelectPreparedStatement(ps);
+            // Voer je query uit en stop het antwoord in een result set
+            ResultSet rs = mysql.executeSelectPreparedStatement(ps);
+
+            // Maak arraylist leeg
+            boekingsoverzicht.clear();
 
             // Loop net zolang als er records zijn
             while (rs.next()) {
-                String reizigerCode = rs.getString("reiziger_code");
-
                 // Maak models aan
                 Reservering reservering = new Reservering(
                         0,
@@ -54,18 +50,7 @@ public class MySQLBoekingsoverzicht extends MySQL<Boekingsoverzicht> {
                         rs.getDate("vertrek_datum"),
                         rs.getBoolean("betaald"),
                         rs.getString("accommodatie_code"),
-                        reizigerCode
-                );
-
-                Reiziger reiziger = new Reiziger(
-                        reizigerCode,
-                        "",
-                        rs.getString("reiziger"),
-                        "",
-                        "",
-                        "",
-                        "",
-                        ""
+                        getReizigerDAO().read(rs.getString("reiziger_code"))
                 );
 
                 Accommodatie accommodatie = new Accommodatie(
@@ -74,12 +59,30 @@ public class MySQLBoekingsoverzicht extends MySQL<Boekingsoverzicht> {
                         rs.getString("land")
                 );
 
-                //voeg die toe aan de arraylist
-                boekingsoverzicht.add(new Boekingsoverzicht(accommodatie, reiziger, reservering));
+                Reiziger reiziger = getReizigerDAO().read(rs.getString("reiziger_code"));
+
+                // Voeg die toe aan de arraylist
+                boekingsoverzicht.add(new Boekingsoverzicht(reservering, accommodatie, reiziger));
             }
+
+            return boekingsoverzicht;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return null;
+    }
+
+    // TODO: Implementeren van deze methode
+    @Override
+    public boolean update(Boekingsoverzicht boekingsoverzicht) {
+        return false;
+    }
+
+    // TODO: Implementeren van deze methode
+    @Override
+    public boolean delete(Boekingsoverzicht boekingsoverzicht) {
+        return false;
     }
 
     /**
@@ -96,34 +99,33 @@ public class MySQLBoekingsoverzicht extends MySQL<Boekingsoverzicht> {
          * uit de database haalt voor de klant met een specifieke reizigerscode - Remzi Cavdar
          */
         String sql = """
-                SELECT R.reservering_id, R.aankomst_datum, R.vertrek_datum, R.betaald, R.accommodatie_code, RE.voornaam,
-                RE.achternaam, RE.plaats, A.naam, A.stad, A.land
-                FROM reservering R
-                LEFT JOIN reiziger RE ON RE.reiziger_code = R.reiziger_code
-                LEFT JOIN accommodatie A ON A.accommodatie_code = R.accommodatie_code
-                WHERE R.reiziger_code = ?;
+                SELECT RS.*, AC.naam, AC.stad, AC.land, RE.voornaam, RE.achternaam, RE.plaats
+                FROM reservering RS
+                INNER JOIN accommodatie AC ON AC.accommodatie_code = RS.accommodatie_code
+                INNER JOIN reiziger RE ON RE.reiziger_code = RS.reiziger_code
+                WHERE RS.reiziger_code = ?;
                 """;
 
         try {
             // Maak je statement
-            PreparedStatement ps = getStatement(sql);
+            PreparedStatement ps = mysql.getStatement(sql);
 
             // Vervang het eerste vraagteken met de reizigerscode. Pas dit eventueel aan voor jou eigen query
             ps.setString(1, reizigerCode);
 
             // Voer het uit
-            ResultSet rs = executeSelectPreparedStatement(ps);
+            ResultSet rs = mysql.executeSelectPreparedStatement(ps);
 
             // Loop net zolang als er records zijn
             while (rs.next()) {
-                // Maak model objecten
+                // Maak model objecten en haal de data uit de database
                 Reservering reservering = new Reservering(
                         0,
                         rs.getDate("aankomst_datum"),
                         rs.getDate("vertrek_datum"),
                         rs.getBoolean("betaald"),
                         rs.getString("accommodatie_code"),
-                        reizigerCode
+                        getReizigerDAO().read(rs.getString("reiziger_code"))
                 );
 
                 Accommodatie accommodatie = new Accommodatie(
@@ -139,22 +141,24 @@ public class MySQLBoekingsoverzicht extends MySQL<Boekingsoverzicht> {
                 );
 
                 // Voeg de reservering toe aan de arraylist
-                reserveringVoor.add(new Boekingsoverzicht(accommodatie, reiziger, reservering));
+                reserveringVoor.add(new Boekingsoverzicht(reservering, accommodatie, reiziger));
             }
+
+            // Geef de arrayList terug met de juiste reserveringen
+            return reserveringVoor;
         } catch (SQLException throwables) {
             // Oeps probleem
             throwables.printStackTrace();
         }
 
-        // Geef de arrayList terug met de juiste reserveringen
-        return reserveringVoor;
+        return null;
     }
 
     /**
      * Haal de reizigerscode op voor een bepaalde boeking per accommodate en datum
      *
-     * @param pCode  de accommodatie code
-     * @param pDatum de datum van verblijf
+     * @param pCode  De accommodatie code
+     * @param pDatum De datum van verblijf
      * @return De reizigerscode
      */
     private String getReizigerscode(String pCode, LocalDate pDatum) {
@@ -167,29 +171,30 @@ public class MySQLBoekingsoverzicht extends MySQL<Boekingsoverzicht> {
         // default waarde
         String reizigerCode = "";
 
-        // convert datum naar ander formaat
+        // Convert datum naar ander formaat
         Date date = Date.valueOf(pDatum);
 
         try {
             // query voorbereiden
-            PreparedStatement ps = getStatement(sql);
+            PreparedStatement ps = mysql.getStatement(sql);
 
             // Vervang de vraagtekens met de juiste waarde. Pas eventueel aan je eigen query
             ps.setString(1, pCode);
             ps.setDate(2, date);
 
             // Voer het uit
-            ResultSet rs = executeSelectPreparedStatement(ps);
+            ResultSet rs = mysql.executeSelectPreparedStatement(ps);
 
             // Loop net zolang als er records zijn
             while (rs.next()) {
+                // Haal de reizigerscode op
                 reizigerCode = rs.getString("reizigerCode");
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
 
-        // Geef de reizigercode terug
+        // Geef de reizigerscode terug
         return reizigerCode;
     }
 
@@ -217,13 +222,13 @@ public class MySQLBoekingsoverzicht extends MySQL<Boekingsoverzicht> {
 
             try {
                 // Roep de methode aan in de parent class en geen je SQL door
-                PreparedStatement ps = getStatement(sql);
+                PreparedStatement ps = mysql.getStatement(sql);
 
                 // vervang de eerste vraagteken met de reizigerscode
                 ps.setString(1, reizigerscode);
 
                 // Voer je query uit
-                ResultSet rs = executeSelectPreparedStatement(ps);
+                ResultSet rs = mysql.executeSelectPreparedStatement(ps);
 
                 // Loop net zolang als er records zijn
                 while (rs.next()) {
@@ -236,7 +241,7 @@ public class MySQLBoekingsoverzicht extends MySQL<Boekingsoverzicht> {
                             rs.getString("postcode"),
                             rs.getString("plaats"),
                             rs.getString("land"),
-                            rs.getString("hoofdreiziger")
+                            (Reiziger) rs.getObject("hoofdreiziger")
                     ));
                 }
             } catch (SQLException throwables) {
@@ -245,53 +250,5 @@ public class MySQLBoekingsoverzicht extends MySQL<Boekingsoverzicht> {
         }
         // Geef de array terug met reserveringen
         return geboektOp;
-    }
-
-    /**
-     * Haal alle boekingen op door de gehele arraylist terug te geven
-     * @return Een arraylist van accommodaties
-     */
-    @Override
-    public List<Boekingsoverzicht> getAll() {
-        return boekingsoverzicht;
-    }
-
-    /**
-     * Haal 1 boeking op
-     * @return Een arraylist van accommodaties
-     */
-    @Override
-    public Boekingsoverzicht get() {
-        // nog niet uitgewerkt geeft nu even null terug
-        return null;
-    }
-
-    /**
-     * Voeg een boeking toe
-     * @param boekingsoverzicht de boeking
-     */
-    @Override
-    public void add(Boekingsoverzicht boekingsoverzicht) {
-        // nog niet uitgewerkt
-    }
-
-    /**
-     * Update de boeking
-     * @param boekingsoverzicht de boeking
-     */
-    @Override
-    public void update(Boekingsoverzicht boekingsoverzicht) {
-        // nog niet uitgewerkt
-
-    }
-
-    /**
-     * Verwijder een boeking
-     * @param object de boeking
-     */
-    @Override
-    public void remove(Boekingsoverzicht object) {
-        // nog niet uitgewerkt
-
     }
 }

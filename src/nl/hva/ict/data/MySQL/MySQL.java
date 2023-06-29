@@ -1,17 +1,10 @@
 package nl.hva.ict.data.MySQL;
 
 import nl.hva.ict.MainApplication;
-import nl.hva.ict.data.Data;
-import nl.hva.ict.data.Identifable;
 import java.sql.*;
 import java.util.Properties;
 
-/**
- * Een abstracte class om de verbinding te maken met de MySQL server.
- * @param <T> Geschikt voor alle models.
- * @author HvA FDMCI HBO-ICT
- */
-public abstract class MySQL<T extends Identifable> implements Data<T> {
+public class MySQL {
     protected Connection connection;
     private Properties properties;
 
@@ -19,12 +12,28 @@ public abstract class MySQL<T extends Identifable> implements Data<T> {
         connect();
     }
 
+    // Connect database
+    private void connect() {
+        // Check of er al een verbinding is of als er al credentials aanwezig zijn in MainApplication
+        if (connection != null || MainApplication.getMysqlHost().equals("") ||
+                MainApplication.getMysqlUsername().equals("") || MainApplication.getMysqlPassword().equals("")) {
+            return;
+        }
+
+        try {
+            // Check of de MySQL driver is geïnstalleerd
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            this.connection = DriverManager.getConnection(MainApplication.getMysqlHost(), getProperties());
+        } catch (ClassNotFoundException | SQLException e) {
+            System.err.println("Kan geen verbinding maken : " + e);
+        }
+    }
+
     /**
      * Met deze class worden de DB credentials opgehaald en in een properties object gezet.
      * @return properties object
      */
     private Properties getProperties() {
-
         // Als er geen properties object is gemaakt, maak hem dan aan
         if (properties == null) {
             properties = new Properties();
@@ -32,23 +41,6 @@ public abstract class MySQL<T extends Identifable> implements Data<T> {
             properties.setProperty("password", MainApplication.getMysqlPassword());
         }
         return properties;
-    }
-
-    // Connect database
-    private void connect() {
-        // Heb je wel je credentials ingevoerd in MainApplication?
-        if (MainApplication.getMysqlHost().equals("") || MainApplication.getMysqlUsername().equals("") || MainApplication.getMysqlPassword().equals(""))
-            return;
-
-        // Maak alleen verbinding als deze niet bestaat.
-        if (connection == null) {
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                this.connection = DriverManager.getConnection(MainApplication.getMysqlHost(), getProperties());
-            } catch (ClassNotFoundException | SQLException e) {
-                System.out.println("Kan geen verbinding maken : " + e.toString());
-            }
-        }
     }
 
     /**
@@ -67,8 +59,7 @@ public abstract class MySQL<T extends Identifable> implements Data<T> {
     }
 
     /**
-     * Methode om een PreparedStatement (met de ? in de query) te maken. Deze methodes worden in de child (sub) class
-     * aangeroepen
+     * Methode om een PreparedStatement (met de ? in de query) te maken.
      * @param sql Je SQL code
      * @return Een resultset met je data
      * @throws SQLException Een error als het niet gaat.
@@ -81,8 +72,7 @@ public abstract class MySQL<T extends Identifable> implements Data<T> {
     }
 
     /**
-     * Methode om een update PreparedStatement (met de ? in de query) te maken. Deze methodes worden in de child (sub)
-     * class aangeroepen
+     * Methode om een update PreparedStatement (met de ? in de query) te maken.
      * @param ps je SQL code
      * @throws SQLException Een error als het niet gaat.
      */
@@ -94,8 +84,7 @@ public abstract class MySQL<T extends Identifable> implements Data<T> {
     }
 
     /**
-     * Methode om een select PreparedStatement (met de ? in de query) te maken. Deze methodes worden in de child (sub)
-     * class aangeroepen
+     * Methode om een select PreparedStatement (met de ? in de query) te maken.
      * @param ps je SQL code
      * @throws SQLException Een error als het niet gaat.
      */

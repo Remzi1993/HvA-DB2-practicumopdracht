@@ -7,8 +7,9 @@ import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import nl.hva.ict.controllers.MainController;
+import nl.hva.ict.data.*;
+import nl.hva.ict.data.MongoDB.MongoDBLandDAO;
 import nl.hva.ict.data.MySQL.*;
-import nl.hva.ict.data.MongoDB.*;
 
 /**
  * Main class met applicatie logica
@@ -26,19 +27,41 @@ public class MainApplication extends Application {
     private static final String MONGODB_HOST = "mongodb+srv://remzicavdar:SJAvgrHExKJ7PMXU@cluster0.3fdaolf.mongodb.net/";
     private static final String MONGODB_DATABASE = "big_five_safari";
 
-    // Data models
-    private static final MySQLReizigers MYSQL_REIZIGERS = new MySQLReizigers();
-    private static final MySQLLodge MYSQL_LODGE = new MySQLLodge();
-    private static final MySQLHotel MYSQL_HOTEL = new MySQLHotel();
-    private static final MySQLAccommodatie MYSQL_ACCOMMODATIE = new MySQLAccommodatie();
-    private static final MySQLBoekingsoverzicht MYSQL_BOEKINGSOVERZICHT = new MySQLBoekingsoverzicht();
-    // HvA FDMCI Databases 2 practicumopdracht - week 5L - Remzi Cavdar
-    private static final MongoDBReizigers MONGODB_REIZIGERS = new MongoDBReizigers();
-    private static final MongoDBLandeninformatie MONGODB_LANDENINFORMATIE = new MongoDBLandeninformatie();
+    // DAO's
+    private static AccommodatieDAO accommodatieDAO = new MySQLAccommodatieDAO();
+    private static BoekingsoverzichtDAO boekingsoverzichtDAO = new MySQLBoekingsoverzichtDAO();
+    private static HotelDAO hotelDAO = new MySQLHotelDAO();
+    private static LandDAO landDAO = new MongoDBLandDAO();
+    private static LodgeDAO lodgeDAO = new MySQLLodgeDAO();
+    private static ReizigerDAO reizigerDAO = new MySQLReizigerDAO();
 
     // JavaFX
     private static Stage stage;
     private static MainController mainController;
+
+    /**
+     * Opstarten JavaFX applicatie.
+     * Kijk voor meer informatie over JavaFX ook bij OOP2
+     * @param stage de stage welke gebruikt wordt
+     */
+    @Override
+    public void start(Stage stage) {
+        MainApplication.stage = stage;
+        int WIDTH = 800;
+        int HEIGHT = 800;
+        stage.setTitle(TITLE);
+        stage.setWidth(WIDTH);
+        stage.setHeight(HEIGHT);
+        mainController = new MainController();
+
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX((primaryScreenBounds.getWidth() - WIDTH) / 2f);
+        stage.setY((primaryScreenBounds.getHeight() - HEIGHT) / 2f);
+        stage.setMinWidth(750);
+        stage.setMinHeight(600);
+        stage.setScene(new Scene(mainController.getView().getRoot()));
+        stage.show();
+    }
 
     public static void switchController(Parent pane) {
         mainController.getBorderPane().setCenter(pane);
@@ -68,56 +91,27 @@ public class MainApplication extends Application {
         return TITLE;
     }
 
-    public static MySQLReizigers getMysqlReizigers() {
-        return MYSQL_REIZIGERS;
+    public static AccommodatieDAO getAccommodatieDAO() {
+        return accommodatieDAO;
     }
 
-    public static MySQLLodge getMysqlLodge() {
-        return MYSQL_LODGE;
+    public static BoekingsoverzichtDAO getBoekingsoverzichtDAO() {
+        return boekingsoverzichtDAO;
     }
 
-    public static MySQLHotel getMysqlHotel() {
-        return MYSQL_HOTEL;
+    public static HotelDAO getHotelDAO() {
+        return hotelDAO;
     }
 
-    public static MySQLBoekingsoverzicht getMysqlBoekingsoverzicht() {
-        return MYSQL_BOEKINGSOVERZICHT;
+    public static LandDAO getLandDAO() {
+        return landDAO;
     }
 
-    public static MySQLAccommodatie getMysqlAccommodatie() {
-        return MYSQL_ACCOMMODATIE;
+    public static LodgeDAO getLodgeDAO() {
+        return lodgeDAO;
     }
 
-    public static MongoDBReizigers getMongodbReizigers() {
-        return MONGODB_REIZIGERS;
-    }
-
-    public static MongoDBLandeninformatie getMongoLandenInformatie() {
-        return MONGODB_LANDENINFORMATIE;
-    }
-
-    /**
-     * Opstarten JavaFX applicatie.
-     * Kijk voor meer informatie over JavaFX ook bij OOP2
-     * @param stage de stage welke gebruikt wordt
-     */
-    @Override
-    public void start(Stage stage) {
-        MainApplication.stage = stage;
-        MainApplication.stage.setTitle(TITLE);
-        int WIDTH = 800;
-        MainApplication.stage.setWidth(WIDTH);
-        int HEIGHT = 800;
-        MainApplication.stage.setHeight(HEIGHT);
-        mainController = new MainController();
-
-        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-        MainApplication.stage.setX((primaryScreenBounds.getWidth() - WIDTH) / 2f);
-        MainApplication.stage.setY((primaryScreenBounds.getHeight() - HEIGHT) / 2f);
-
-        MainApplication.stage.setMinWidth(750);
-        MainApplication.stage.setMinHeight(600);
-        MainApplication.stage.setScene(new Scene(mainController.getView().getRoot()));
-        stage.show();
+    public static ReizigerDAO getReizigerDAO() {
+        return reizigerDAO;
     }
 }

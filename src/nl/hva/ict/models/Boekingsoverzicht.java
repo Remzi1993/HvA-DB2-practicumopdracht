@@ -1,23 +1,20 @@
 package nl.hva.ict.models;
 
-import nl.hva.ict.data.Identifable;
-
 /**
  * Model voor BoekingsOverzicht
+ *
  * @author HvA FDMCI HBO-ICT
  */
-public class Boekingsoverzicht implements Identifable {
+public class Boekingsoverzicht {
     private Accommodatie accommodatie;
     private Reiziger reiziger;
     private Reservering reservering;
 
-    public Boekingsoverzicht() {
-    }
-
-    public Boekingsoverzicht(Accommodatie accommodatie, Reiziger reiziger, Reservering reservering) {
+    public Boekingsoverzicht(Reservering reservering, Accommodatie accommodatie, Reiziger reiziger) {
+        this.reservering = reservering;
         this.accommodatie = accommodatie;
         this.reiziger = reiziger;
-        this.reservering = reservering;
+
     }
 
     public Accommodatie getAccommodatie() {
@@ -46,20 +43,9 @@ public class Boekingsoverzicht implements Identifable {
 
     @Override
     public String toString() {
-       StringBuilder stringBuilder = new StringBuilder();
-       stringBuilder.append(this.reiziger.getVoornaam());
-       stringBuilder.append(" ");
-       stringBuilder.append(this.reiziger.getAchternaam());
-       stringBuilder.append(" - reist van ");
-       stringBuilder.append(reservering.getAankomstDatum());
-       stringBuilder.append(" tot ");
-       stringBuilder.append(reservering.getVertrekDatum());
-       stringBuilder.append(" en verblijft in : ");
-       stringBuilder.append(accommodatie.getNaam());
-       stringBuilder.append(" in ");
-       stringBuilder.append(accommodatie.getStad());
-       stringBuilder.append(" - ");
-       stringBuilder.append(accommodatie.getLand());
-       return stringBuilder.toString();
+        return String.format("%s %s - reist van %s tot %s en verblijft in: %s in %s - %s", reiziger.getVoornaam(),
+                reiziger.getAchternaam(), reservering.getAankomstDatum(), reservering.getVertrekDatum(),
+                accommodatie.getNaam(), accommodatie.getStad(), accommodatie.getLand()
+        );
     }
 }

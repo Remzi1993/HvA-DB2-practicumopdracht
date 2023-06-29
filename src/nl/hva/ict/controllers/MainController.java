@@ -21,15 +21,12 @@ public class MainController extends Controller {
     private final BoekingsoverzichtController boekingsOverzichtController;
     private final BoekingsoverzichtPerKlantController boekingsoverzichtPerKlantController;
     private final BoekingsGeboektOpController boekingsGeboektOpController;
-    private final LandeninformatieController landeninformatieController;
+    private final LandController landController;
 
-    /**
-     * Controller
-     */
     public MainController() {
         mainView = new MainView();
 
-        //Maak controllers aan
+        // Maak controllers aan
         reizigerController = new ReizigerController();
         hotelController = new HotelController();
         lodgeController = new LodgeController();
@@ -37,10 +34,9 @@ public class MainController extends Controller {
         boekingsOverzichtController = new BoekingsoverzichtController();
         boekingsoverzichtPerKlantController = new BoekingsoverzichtPerKlantController();
         boekingsGeboektOpController = new BoekingsGeboektOpController();
-        landeninformatieController = new LandeninformatieController();
+        landController = new LandController();
 
-
-        //default header message
+        // Default header message
         mainView.getMessage().setText("Home");
 
         mainView.getStartschermMenuItem().setOnAction(event -> {
@@ -98,7 +94,7 @@ public class MainController extends Controller {
         });
 
         mainView.getInformatieMenu().setOnAction(event -> {
-            MainApplication.switchController(landeninformatieController.getView().getRoot());
+            MainApplication.switchController(landController.getView().getRoot());
             mainView.getMessage().setText("Landen informatie");
         });
     }

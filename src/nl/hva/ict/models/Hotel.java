@@ -1,13 +1,12 @@
 package nl.hva.ict.models;
 
-import nl.hva.ict.data.Identifable;
 import java.io.Serializable;
 
 /**
  * Model voor Hotel
  * @author HvA FDMCI HBO-ICT
  */
-public class Hotel extends Accommodatie implements Identifable, Serializable {
+public class Hotel extends Accommodatie implements Serializable {
     private double prijsPerNacht;
     private boolean ontbijt;
 

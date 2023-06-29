@@ -1,20 +1,17 @@
 package nl.hva.ict.models;
 
-import nl.hva.ict.data.Identifable;
 import java.io.Serializable;
 
 /**
  * Model voor Lodge
  * @author HvA FDMCI HBO-ICT
  */
-public class Lodge extends Accommodatie implements Identifable, Serializable {
+public class Lodge extends Accommodatie implements Serializable {
     private double prijsPerWeek;
     private boolean autoHuren;
 
-    public Lodge() {
-    }
-
-    public Lodge(String accommodatieCode, String naam, String stad, String land, String kamer, int personen, double prijsPerWeek, boolean autoHuren) {
+    public Lodge(String accommodatieCode, String naam, String stad, String land, String kamer, int personen,
+                 double prijsPerWeek, boolean autoHuren) {
         super(accommodatieCode, naam, stad, land, kamer, personen);
         this.prijsPerWeek = prijsPerWeek;
         this.autoHuren = autoHuren;
@@ -34,10 +31,5 @@ public class Lodge extends Accommodatie implements Identifable, Serializable {
 
     public void setAutoHuren(boolean autoHuren) {
         this.autoHuren = autoHuren;
-    }
-
-    @Override
-    public String toString() {
-        return super.getNaam() + " in " + super.getStad() + " - " + super.getLand();
     }
 }

@@ -27,7 +27,7 @@ public class BoekingsoverzichtPerKlantView extends View {
         gridPane.setPadding(new Insets(10, 10, 10, 10));
         gridPane.setHgap(5);
         gridPane.setVgap(5);
-        gridPane.add(new Label("Gebruiker"), 0, 0);
+        gridPane.add(new Label("Klant:"), 0, 0);
         gridPane.add(comboBox, 1, 0);
         boekingsOverzichtListView.setPrefWidth(800);
         boekingsOverzichtListView.setPrefHeight(700);

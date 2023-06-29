@@ -1,27 +1,23 @@
 package nl.hva.ict.data.MySQL;
 
+import nl.hva.ict.data.HotelDAO;
 import nl.hva.ict.models.Hotel;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Dao voor hotels
- * @author HvA FDMCI HBO-ICT
- */
-public class MySQLHotel extends MySQL<Hotel> {
-    private final List<Hotel> hotels;
+public class MySQLHotelDAO extends HotelDAO {
+    private final MySQL mysql = new MySQL();
 
-    public MySQLHotel() {
-        hotels = new ArrayList<>();
-
-        // Laad bij startup
-        load();
+    // TODO: Implementeren van deze methode
+    @Override
+    public boolean create(Hotel hotel) {
+        return false;
     }
 
-    private void load() {
+    @Override
+    public List<Hotel> read() {
         // Alle hotels worden opgehaald - Remzi Cavdar
         String sql = """
                 SELECT A.accommodatie_code, A.naam, A.stad, A.land, A.kamer, A.personen, H.prijs_per_nacht, H.ontbijt
@@ -31,10 +27,13 @@ public class MySQLHotel extends MySQL<Hotel> {
 
         try {
             // Roep de methode aan in de parent class en geen je SQL door
-            PreparedStatement ps = getStatement(sql);
+            PreparedStatement ps = mysql.getStatement(sql);
 
-            //Voer je query uit en stop het antwoord in een result set
-            ResultSet rs = executeSelectPreparedStatement(ps);
+            // Voer je query uit en stop het antwoord in een result set
+            ResultSet rs = mysql.executeSelectPreparedStatement(ps);
+
+            // Maak arraylist leeg
+            hotels.clear();
 
             // Loop net zolang als er records zijn
             while (rs.next()) {
@@ -50,85 +49,49 @@ public class MySQLHotel extends MySQL<Hotel> {
                         rs.getBoolean("ontbijt")
                 ));
             }
+
+            return hotels;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
 
-    /**
-     * Geef alle hotels in de arraylist terug
-     * @return arraylist met hotels
-     */
-    @Override
-    public List<Hotel> getAll() {
-        return hotels;
-    }
-
-    /**
-     * Haal 1 hotel op
-     * @return hotel object
-     */
-    @Override
-    public Hotel get() {
         return null;
     }
 
-    /**
-     * Voeg een hotel toe
-     * @param hotel hotel
-     */
+    // TODO: Implementeren van deze methode
     @Override
-    public void add(Hotel hotel) {
-
+    public boolean update(Hotel hotel) {
+        return false;
     }
 
-    /**
-     * Update een hotel
-     * @param hotel hotel
-     */
     @Override
-    public void update(Hotel hotel) {
+    public boolean delete(Hotel hotel) {
+        // Als er geen object is wordt de methode afgebroken
+        if (hotel == null) {
+            System.err.println("Geen object meegegeven");
+            return false;
+        }
 
-    }
-
-    /**
-     * Verwijder een hotel
-     * @param object het hotel
-     */
-    @Override
-    public void remove(Hotel object) {
         /* HvA FDMCI Databases 2 practicumopdracht - week 4D
          * Roep in deze methode de stored function aan die eerder is aangemaakt in de database - Remzi Cavdar
          */
         String sql = "CALL verwijderAccommodatie(?);";
 
-        // Als er geen object is wordt de methode afgebroken
-        if (object == null)
-            return;
-
         try {
-            // Maak je statement
-            PreparedStatement ps = getStatement(sql);
+            // Maak je SQL-statement
+            PreparedStatement ps = mysql.getStatement(sql);
 
             // Vervang het eerste vraagteken met de reizigerscode. Pas dit eventueel aan voor jou eigen query
-            ps.setString(1, object.getAccommodatieCode());
+            ps.setString(1, hotel.getAccommodatieCode());
 
             // Voer het uit
-            ResultSet rs = executeSelectPreparedStatement(ps);
-            reload();
+            ResultSet rs = mysql.executeSelectPreparedStatement(ps);
+
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
 
-    /**
-     * Refresh het scherm
-     */
-    public void reload() {
-        // Leeg arraylist
-        hotels.clear();
-
-        // Laad de data weer opnieuw
-        load();
+        return false;
     }
 }

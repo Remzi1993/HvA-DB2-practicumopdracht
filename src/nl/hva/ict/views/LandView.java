@@ -5,16 +5,16 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import nl.hva.ict.models.Landen;
+import nl.hva.ict.models.Land;
 
-public class LandenInformatieView extends View {
+public class LandView extends View {
     private final GridPane rootPane;
     private final ComboBox comboBox;
-    private final ListView<Landen> landenInformatieListView;
+    private final ListView<Land> landenInformatieListView;
     private final CheckBox checkBox;
     private final TextArea textArea;
 
-    public LandenInformatieView() {
+    public LandView() {
         this.rootPane = new GridPane();
         this.comboBox = new ComboBox();
         this.checkBox = new CheckBox();
@@ -47,7 +47,7 @@ public class LandenInformatieView extends View {
         return rootPane;
     }
 
-    public ListView<Landen> getLandenInformatieListView() {
+    public ListView<Land> getLandenInformatieListView() {
         return landenInformatieListView;
     }
 
