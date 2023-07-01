@@ -1,7 +1,5 @@
 package nl.hva.ict.data;
 
-import nl.hva.ict.models.Reiziger;
-
 import java.util.List;
 
 /**

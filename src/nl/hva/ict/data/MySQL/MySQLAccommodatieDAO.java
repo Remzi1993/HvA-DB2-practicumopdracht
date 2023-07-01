@@ -10,12 +10,6 @@ import java.util.List;
 public class MySQLAccommodatieDAO extends AccommodatieDAO {
     private final MySQL mysql = new MySQL();
 
-    // TODO: Implementeren van deze methode
-    @Override
-    public boolean create(Accommodatie accommodatie) {
-        return false;
-    }
-
     @Override
     public List<Accommodatie> read() {
         // Vul hier je SQL code in
@@ -25,7 +19,7 @@ public class MySQLAccommodatieDAO extends AccommodatieDAO {
             // Roep de methode aan in de parent class en geen je SQL door
             PreparedStatement ps = mysql.getStatement(sql);
 
-            //Voer je query uit en stop het antwoord in een result set
+            // Voer je query uit en stop het antwoord in een result set
             ResultSet rs = mysql.executeSelectPreparedStatement(ps);
 
             // Maak arraylist leeg
@@ -50,17 +44,5 @@ public class MySQLAccommodatieDAO extends AccommodatieDAO {
         }
 
         return null;
-    }
-
-    // TODO: Implementeren van deze methode
-    @Override
-    public boolean update(Accommodatie accommodatie) {
-        return false;
-    }
-
-    // TODO: Implementeren van deze methode
-    @Override
-    public boolean delete(Accommodatie accommodatie) {
-        return false;
     }
 }

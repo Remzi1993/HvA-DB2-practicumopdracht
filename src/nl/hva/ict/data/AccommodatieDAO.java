@@ -7,15 +7,26 @@ import java.util.List;
 public abstract class AccommodatieDAO implements DAO<Accommodatie> {
     protected List<Accommodatie> accommodaties = new ArrayList<>();
 
+    /* Deze DAO is alleen bedoeld om all accommodaties op te halen (read) uit de database.
+     * Dit wordt gebruikt bij BoekingsGeboektOpController
+     * Daarom geven we de andere methodes een return van false terug en worden ze in de child classes niet geïmplementeerd.
+     */
+
     @Override
-    public abstract boolean create(Accommodatie accommodatie);
+    public boolean create(Accommodatie accommodatie) {
+        return false;
+    }
 
     @Override
     public abstract List<Accommodatie> read();
 
     @Override
-    public abstract boolean update(Accommodatie accommodatie);
+    public boolean update(Accommodatie accommodatie) {
+        return false;
+    }
 
     @Override
-    public abstract boolean delete(Accommodatie accommodatie);
+    public boolean delete(Accommodatie accommodatie) {
+        return false;
+    }
 }

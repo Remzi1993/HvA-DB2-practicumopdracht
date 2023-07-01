@@ -9,17 +9,28 @@ import java.util.List;
 public abstract class BoekingsoverzichtDAO implements DAO<Boekingsoverzicht> {
     protected List<Boekingsoverzicht> boekingsoverzicht = new ArrayList<>();
 
+    /* Omdat het over een overzicht gaat is het niet nodig om een boekingsoverzicht te kunnen aanmaken (create),
+     * aanpassen (update) of verwijderen (delete).
+     * Daarom geven deze methodes een return van false terug en worden ze in de child classes niet geïmplementeerd.
+     */
+
     @Override
-    public abstract boolean create(Boekingsoverzicht boekingsoverzicht);
+    public boolean create(Boekingsoverzicht boekingsoverzicht) {
+        return false;
+    }
 
     @Override
     public abstract List<Boekingsoverzicht> read();
 
     @Override
-    public abstract boolean update(Boekingsoverzicht boekingsoverzicht);
+    public boolean update(Boekingsoverzicht boekingsoverzicht) {
+        return false;
+    }
 
     @Override
-    public abstract boolean delete(Boekingsoverzicht boekingsoverzicht);
+    public boolean delete(Boekingsoverzicht boekingsoverzicht) {
+        return false;
+    }
 
     public abstract List<Boekingsoverzicht> getBoekingVoor(String reizigerCode);
 

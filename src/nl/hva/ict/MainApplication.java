@@ -20,8 +20,8 @@ public class MainApplication extends Application {
 
     // MySQL
     private static final String MYSQL_HOST = "jdbc:mysql://localhost:3306/big_five_safari?autoReconnect=true&serverTimezone=Europe/Amsterdam&useSSL=False";
-    private static final String MYSQL_USERNAME = "Remzi";
-    private static final String MYSQL_PASSWORD = "remzi12345?";
+    private static final String MYSQL_USERNAME = "Testadmin";
+    private static final String MYSQL_PASSWORD = "DitIsEenDummyTestAccount";
 
     // MongoDB - HvA FDMCI Databases 2 practicumopdracht - week 5K - Remzi Cavdar
     private static final String MONGODB_HOST = "mongodb+srv://remzicavdar:SJAvgrHExKJ7PMXU@cluster0.3fdaolf.mongodb.net/";

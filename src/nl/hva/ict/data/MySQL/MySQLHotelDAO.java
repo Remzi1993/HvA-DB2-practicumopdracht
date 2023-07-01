@@ -18,14 +18,14 @@ public class MySQLHotelDAO extends HotelDAO {
 
     @Override
     public List<Hotel> read() {
-        // Alle hotels worden opgehaald - Remzi Cavdar
-        String sql = """
+        try {
+            // Alle hotels worden opgehaald - Remzi Cavdar
+            String sql = """
                 SELECT A.accommodatie_code, A.naam, A.stad, A.land, A.kamer, A.personen, H.prijs_per_nacht, H.ontbijt
                 FROM hotel H
                 INNER JOIN accommodatie A ON A.accommodatie_code = H.accommodatie_code;
                 """;
 
-        try {
             // Roep de methode aan in de parent class en geen je SQL door
             PreparedStatement ps = mysql.getStatement(sql);
 

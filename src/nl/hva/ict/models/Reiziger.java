@@ -10,23 +10,6 @@ public class Reiziger implements Serializable {
     private String reizigerCode, voornaam, achternaam, adres, postcode, plaats, land;
     private Reiziger hoofdreiziger;
 
-    public Reiziger(String voornaam, String achternaam, String plaats) {
-        this.voornaam = voornaam;
-        this.achternaam = achternaam;
-        this.plaats = plaats;
-    }
-
-    public Reiziger(String reizigerCode, String voornaam, String achternaam, String adres, String postcode,
-                    String plaats, String land) {
-        this.reizigerCode = reizigerCode;
-        this.voornaam = voornaam;
-        this.achternaam = achternaam;
-        this.adres = adres;
-        this.postcode = postcode;
-        this.plaats = plaats;
-        this.land = land;
-    }
-
     public Reiziger(String reizigerCode, String voornaam, String achternaam, String adres, String postcode,
                     String plaats, String land, Reiziger hoofdreiziger) {
         this.reizigerCode = reizigerCode;

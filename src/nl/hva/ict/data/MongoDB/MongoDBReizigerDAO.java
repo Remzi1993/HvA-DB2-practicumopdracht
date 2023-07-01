@@ -46,7 +46,8 @@ public class MongoDBReizigerDAO extends ReizigerDAO {
                             (String) document.get("Adres"),
                             (String) document.get("Postcode"),
                             (String) document.get("Plaats"),
-                            (String) document.get("Land")
+                            (String) document.get("Land"),
+                            null
                     ));
                 } else {
                     reizigers.add(new Reiziger(
@@ -73,7 +74,7 @@ public class MongoDBReizigerDAO extends ReizigerDAO {
 
     // TODO: Implementeren van deze methode
     @Override
-    public boolean update(Reiziger reiziger) {
+    public boolean update(Reiziger reiziger, String oudeReizigerCode) {
         return false;
     }
 

@@ -31,6 +31,7 @@ public abstract class ReizigerDAO implements DAO<Reiziger> {
                     return reiziger;
                 }
             }
+
             return null;
         } catch (IndexOutOfBoundsException e) {
             System.err.println("Exceeded list size");
@@ -42,8 +43,11 @@ public abstract class ReizigerDAO implements DAO<Reiziger> {
         }
     }
 
-    @Override
-    public abstract boolean update(Reiziger reiziger);
+    public boolean update(Reiziger reiziger) {
+        return update(reiziger, reiziger.getReizigerCode());
+    }
+
+    public abstract boolean update(Reiziger reiziger, String oudeReizigerCode);
 
     @Override
     public abstract boolean delete(Reiziger reiziger);

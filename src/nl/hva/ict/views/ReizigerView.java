@@ -13,7 +13,7 @@ public class ReizigerView extends View {
     private final GridPane rootPane;
     private TextField txtReizigersCode, txtVoornaam, txtAchternaam, txtAdres, txtPostcode, txtPlaats, txtLand;
     private ComboBox<Reiziger> comboReistSamenMet;
-    private Button btDelete, btNew, btSave, btUpdateData;
+    private Button btDelete, btSave, btUpdateData;
     private ListView<Reiziger> reizigersViewListView;
 
     public ReizigerView() {
@@ -61,10 +61,9 @@ public class ReizigerView extends View {
         leftPane.add(comboReistSamenMet, 1, 7);
 
         // voeg buttons toe
-        btDelete = new Button("Verwijder");
-        btNew = new Button("Insert");
-        btSave = new Button("Update");
-        HBox buttonBox = new HBox(btDelete, btNew, btSave);
+        btSave = new Button("Opslaan");
+        btDelete = new Button("Verwijderen");
+        HBox buttonBox = new HBox(btSave, btDelete);
         buttonBox.setSpacing(5);
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
         leftPane.add(buttonBox, 1, 8);
@@ -74,7 +73,7 @@ public class ReizigerView extends View {
 
         // maak een rightPane
         reizigersViewListView = new ListView<>();
-        btUpdateData = new Button(" Refresh lijst ");
+        btUpdateData = new Button("Herladen en selectie verwijderen");
         VBox rightPane = new VBox();
         rightPane.setMinWidth(300);
         rightPane.setSpacing(5);
@@ -119,10 +118,6 @@ public class ReizigerView extends View {
 
     public Button getBtDelete() {
         return btDelete;
-    }
-
-    public Button getBtNew() {
-        return btNew;
     }
 
     public Button getBtSave() {

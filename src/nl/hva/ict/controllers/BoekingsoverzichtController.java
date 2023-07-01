@@ -16,8 +16,8 @@ public class BoekingsoverzichtController extends Controller {
     private ObservableList<Boekingsoverzicht> boekingsoverzichtList;
 
     public BoekingsoverzichtController() {
-        boekingsoverzichtList = FXCollections.observableArrayList(getBoekingsoverzichtDAO().read());
         view = new BoekingsoverzichtView();
+        boekingsoverzichtList = FXCollections.observableArrayList(getBoekingsoverzichtDAO().read());
         view.getBoekingsOverzichtListView().setItems(boekingsoverzichtList);
     }
 

@@ -17,12 +17,6 @@ import static nl.hva.ict.MainApplication.getReizigerDAO;
 public class MySQLBoekingsoverzichtDAO extends BoekingsoverzichtDAO {
     private final MySQL mysql = new MySQL();
 
-    // TODO: Implementeren van deze methode
-    @Override
-    public boolean create(Boekingsoverzicht boekingsoverzicht) {
-        return false;
-    }
-
     @Override
     public List<Boekingsoverzicht> read() {
         /* HvA FDMCI Databases 2 practicumopdracht - week 4B
@@ -71,18 +65,6 @@ public class MySQLBoekingsoverzichtDAO extends BoekingsoverzichtDAO {
         }
 
         return null;
-    }
-
-    // TODO: Implementeren van deze methode
-    @Override
-    public boolean update(Boekingsoverzicht boekingsoverzicht) {
-        return false;
-    }
-
-    // TODO: Implementeren van deze methode
-    @Override
-    public boolean delete(Boekingsoverzicht boekingsoverzicht) {
-        return false;
     }
 
     /**
@@ -135,9 +117,14 @@ public class MySQLBoekingsoverzichtDAO extends BoekingsoverzichtDAO {
                 );
 
                 Reiziger reiziger = new Reiziger(
+                        null,
                         rs.getString("voornaam"),
                         rs.getString("achternaam"),
-                        rs.getString("plaats")
+                        null,
+                        null,
+                        rs.getString("plaats"),
+                        null,
+                        null
                 );
 
                 // Voeg de reservering toe aan de arraylist
@@ -209,7 +196,7 @@ public class MySQLBoekingsoverzichtDAO extends BoekingsoverzichtDAO {
         // Init arraylist
         List<Reiziger> geboektOp = new ArrayList<>();
 
-        //Stop null pointer error als datum nog niet is ingevuld.
+        // Stop null pointer error als datum nog niet is ingevuld.
         if (pDatum == null)
             return geboektOp;
 
@@ -217,10 +204,10 @@ public class MySQLBoekingsoverzichtDAO extends BoekingsoverzichtDAO {
         String reizigerscode = getReizigerscode(pCode, pDatum);
 
         if (reizigerscode != null) {
-            // Haal alle reserveringen op
-            String sql = "SELECT * FROM reiziger R WHERE R.reiziger_code = ?;";
-
             try {
+                // Haal alle reserveringen op
+                String sql = "SELECT * FROM reiziger R WHERE R.reiziger_code = ?;";
+
                 // Roep de methode aan in de parent class en geen je SQL door
                 PreparedStatement ps = mysql.getStatement(sql);
 
@@ -241,7 +228,7 @@ public class MySQLBoekingsoverzichtDAO extends BoekingsoverzichtDAO {
                             rs.getString("postcode"),
                             rs.getString("plaats"),
                             rs.getString("land"),
-                            (Reiziger) rs.getObject("hoofdreiziger")
+                            getReizigerDAO().read(rs.getString("hoofdreiziger"))
                     ));
                 }
             } catch (SQLException throwables) {

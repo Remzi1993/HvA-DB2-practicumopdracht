@@ -31,12 +31,10 @@ public class ReizigerController extends Controller {
                 e -> setInputsInView()
         );
 
-        // Luister naar de knoppen en voer de bijbehorende functies uit
-        view.getBtNew().setOnAction(e -> create());
-        view.getBtSave().setOnAction(e -> update());
-        view.getBtDelete().setOnAction(e -> delete());
-
         view.getBtUpdateData().setOnAction(e -> reloadData());
+        // Luister naar de knoppen en voer de bijbehorende functies uit
+        view.getBtSave().setOnAction(e -> createOrUpdate());
+        view.getBtDelete().setOnAction(e -> delete());
     }
 
     private void setInputsInView() {
@@ -44,6 +42,9 @@ public class ReizigerController extends Controller {
         if(geselecteerdeReiziger == null) {
             return;
         }
+        System.out.println(geselecteerdeReiziger);
+        System.out.println("getReizigerCode: " + geselecteerdeReiziger.getReizigerCode());
+        System.out.println("getHoofdreiziger: " + geselecteerdeReiziger.getHoofdreiziger());
         view.getTxtReizigersCode().setText(geselecteerdeReiziger.getReizigerCode());
         view.getTxtVoornaam().setText(geselecteerdeReiziger.getVoornaam());
         view.getTxtAchternaam().setText(geselecteerdeReiziger.getAchternaam());
@@ -51,7 +52,10 @@ public class ReizigerController extends Controller {
         view.getTxtPostcode().setText(geselecteerdeReiziger.getPostcode());
         view.getTxtPlaats().setText(geselecteerdeReiziger.getPlaats());
         view.getTxtLand().setText(geselecteerdeReiziger.getLand());
-        view.getComboReistSamenMet().getSelectionModel().select(geselecteerdeReiziger.getHoofdreiziger());
+
+        if(geselecteerdeReiziger.getHoofdreiziger() != null) {
+            view.getComboReistSamenMet().getSelectionModel().select(geselecteerdeReiziger.getHoofdreiziger());
+        }
     }
 
     private void clearInputsInView() {
@@ -77,26 +81,29 @@ public class ReizigerController extends Controller {
         return view;
     }
 
-    // Voeg record toe
-    private void create() {
-        if(geselecteerdeReiziger != null) {
-            return;
-        }
-
+    // Voeg record toe (create) of pas deze aan (update)
+    private void createOrUpdate() {
+        geselecteerdeReiziger = view.getReizigersListView().getSelectionModel().getSelectedItem();
+        String oudeReizigerCode = geselecteerdeReiziger.getReizigerCode();
         Reiziger reiziger;
+
+        System.out.println("Oude reizigercode: " + oudeReizigerCode);
+        System.out.println("Nieuwe reizigercode: " + view.getTxtReizigersCode().getText());
+
         if (view.getComboReistSamenMet().getSelectionModel().getSelectedItem() == null) {
             reiziger = new Reiziger(
-                    view.getTxtAchternaam().getText() + view.getTxtVoornaam().getText().charAt(0),
+                    view.getTxtReizigersCode().getText(),
                     view.getTxtVoornaam().getText(),
                     view.getTxtAchternaam().getText(),
                     view.getTxtAdres().getText(),
                     view.getTxtPostcode().getText(),
                     view.getTxtPlaats().getText(),
-                    view.getTxtLand().getText()
+                    view.getTxtLand().getText(),
+                    null
             );
         } else {
             reiziger = new Reiziger(
-                    view.getTxtAchternaam().getText() + view.getTxtVoornaam().getText().charAt(0),
+                    view.getTxtReizigersCode().getText(),
                     view.getTxtVoornaam().getText(),
                     view.getTxtAchternaam().getText(),
                     view.getTxtAdres().getText(),
@@ -107,19 +114,28 @@ public class ReizigerController extends Controller {
             );
         }
 
-        // Voeg record toe aan database en reload de data
-        if(getReizigerDAO().create(reiziger)) {
-            reloadData();
+        if(geselecteerdeReiziger == null) {
+            // Voeg record toe aan database en reload de data
+            if(getReizigerDAO().create(reiziger)) {
+                reloadData();
+            }
+        } else {
+            // Voeg record toe aan database en reload de data
+            if(getReizigerDAO().update(reiziger, oudeReizigerCode)) {
+                reloadData();
+            }
         }
     }
 
-    // Update record
-    private void update() {
-        // bewaar (update) record
-    }
-
-    // Verwijder record
+    // Verwijder record (delete) uit de database
     private void delete() {
-        // delete dit record
+        geselecteerdeReiziger = view.getReizigersListView().getSelectionModel().getSelectedItem();
+        if(geselecteerdeReiziger == null) {
+            return;
+        }
+        // Verwijder record uit database en reload de data
+        if(getReizigerDAO().delete(geselecteerdeReiziger)) {
+            reloadData();
+        }
     }
 }
