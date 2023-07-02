@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import static nl.hva.ict.MainApplication.getReizigerDAO;
 
 public class MySQLReizigerDAO extends ReizigerDAO {
     private final MySQL mysql = new MySQL();
@@ -73,7 +72,7 @@ public class MySQLReizigerDAO extends ReizigerDAO {
                         rs.getString("postcode"),
                         rs.getString("plaats"),
                         rs.getString("land"),
-                        getReizigerDAO().read(rs.getString("hoofdreiziger"))
+                        read(rs.getString("hoofdreiziger"))
                 ));
             }
 
@@ -83,6 +82,44 @@ public class MySQLReizigerDAO extends ReizigerDAO {
             e.printStackTrace();
         }
 
+        return null;
+    }
+
+    /**
+     * @return een specifieke reiziger via de reizigerCode.
+     */
+    @Override
+    public Reiziger read(String reizigerCode) {
+        if(reizigerCode == null){
+            return null;
+        }
+
+        try {
+            String sql = "SELECT * FROM reiziger WHERE reiziger_code = ?;";
+
+            // Roep de methode aan in de parent class en geen je SQL door
+            PreparedStatement ps = mysql.getStatement(sql);
+
+            ps.setString(1, reizigerCode);
+
+            // Voer je query uit en stop het antwoord in een result set
+            ResultSet rs = mysql.executeSelectPreparedStatement(ps);
+
+            while (rs.next()) {
+                return new Reiziger(
+                        rs.getString("reiziger_code"),
+                        rs.getString("voornaam"),
+                        rs.getString("achternaam"),
+                        rs.getString("adres"),
+                        rs.getString("postcode"),
+                        rs.getString("plaats"),
+                        rs.getString("land"),
+                        null
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -117,10 +154,10 @@ public class MySQLReizigerDAO extends ReizigerDAO {
         if (reizigersCodes.size() > 0) {
             try {
                 String sql = """
-                    UPDATE reiziger
-                    SET hoofdreiziger = NULL
-                    WHERE hoofdreiziger = ?;
-                    """;
+                        UPDATE reiziger
+                        SET hoofdreiziger = NULL
+                        WHERE hoofdreiziger = ?;
+                        """;
                 PreparedStatement ps = mysql.getStatement(sql);
 
                 ps.setString(1, oudeReizigerCode);
@@ -172,10 +209,10 @@ public class MySQLReizigerDAO extends ReizigerDAO {
         if (reizigersCodes.size() > 0) {
             try {
                 String sql = """
-                    UPDATE reiziger
-                    SET hoofdreiziger = ?
-                    WHERE reiziger_code = ?;
-                    """;
+                        UPDATE reiziger
+                        SET hoofdreiziger = ?
+                        WHERE reiziger_code = ?;
+                        """;
                 PreparedStatement ps = mysql.getStatement(sql);
 
                 ps.setString(1, reiziger.getReizigerCode());

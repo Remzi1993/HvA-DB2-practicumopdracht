@@ -58,7 +58,7 @@ public class MongoDBReizigerDAO extends ReizigerDAO {
                             (String) document.get("Postcode"),
                             (String) document.get("Plaats"),
                             (String) document.get("Land"),
-                            getReizigerDAO().read((String) document.get("Hoofdreiziger"))
+                            read((String) document.get("Hoofdreiziger"))
                     ));
                 }
             }
@@ -69,6 +69,11 @@ public class MongoDBReizigerDAO extends ReizigerDAO {
             e.printStackTrace();
         }
 
+        return null;
+    }
+
+    @Override
+    public Reiziger read(String reizigerCode) {
         return null;
     }
 

@@ -26,9 +26,35 @@ public class ReizigerController extends Controller {
         view.getReizigersListView().setItems(reizigers);
         view.getComboReistSamenMet().setItems(reizigers);
 
-        // Luister naar wijzigingen in de listview en voer functie getInputsInView() uit als er een item wordt geselecteerd
+        // Luister naar wijzigingen in de listview
         view.getReizigersListView().getSelectionModel().selectedItemProperty().addListener(
-                e -> setInputsInView()
+                (observableValue, oudeReiziger, nieuweReiziger) -> {
+                    if (nieuweReiziger == null) {
+                        view.getTxtReizigersCode().clear();
+                        view.getTxtVoornaam().clear();
+                        view.getTxtAchternaam().clear();
+                        view.getTxtAdres().clear();
+                        view.getTxtPostcode().clear();
+                        view.getTxtPlaats().clear();
+                        view.getTxtLand().clear();
+                        view.getComboReistSamenMet().getSelectionModel().clearSelection();
+                        view.getComboReistSamenMet().getSelectionModel().select(null);
+                    } else {
+                        view.getTxtReizigersCode().setText(nieuweReiziger.getReizigerCode());
+                        view.getTxtVoornaam().setText(nieuweReiziger.getVoornaam());
+                        view.getTxtAchternaam().setText(nieuweReiziger.getAchternaam());
+                        view.getTxtAdres().setText(nieuweReiziger.getAdres());
+                        view.getTxtPostcode().setText(nieuweReiziger.getPostcode());
+                        view.getTxtPlaats().setText(nieuweReiziger.getPlaats());
+                        view.getTxtLand().setText(nieuweReiziger.getLand());
+                        view.getComboReistSamenMet().getSelectionModel().clearSelection();
+                        view.getComboReistSamenMet().getSelectionModel().select(null);
+
+                        if (nieuweReiziger.getHoofdreiziger() != null) {
+                            view.getComboReistSamenMet().getSelectionModel().select(nieuweReiziger.getHoofdreiziger());
+                        }
+                    }
+                }
         );
 
         view.getBtUpdateData().setOnAction(e -> reloadData());
@@ -37,42 +63,8 @@ public class ReizigerController extends Controller {
         view.getBtDelete().setOnAction(e -> delete());
     }
 
-    private void setInputsInView() {
-        geselecteerdeReiziger = view.getReizigersListView().getSelectionModel().getSelectedItem();
-        if(geselecteerdeReiziger == null) {
-            return;
-        }
-        System.out.println(geselecteerdeReiziger);
-        System.out.println("getReizigerCode: " + geselecteerdeReiziger.getReizigerCode());
-        System.out.println("getHoofdreiziger: " + geselecteerdeReiziger.getHoofdreiziger());
-        view.getTxtReizigersCode().setText(geselecteerdeReiziger.getReizigerCode());
-        view.getTxtVoornaam().setText(geselecteerdeReiziger.getVoornaam());
-        view.getTxtAchternaam().setText(geselecteerdeReiziger.getAchternaam());
-        view.getTxtAdres().setText(geselecteerdeReiziger.getAdres());
-        view.getTxtPostcode().setText(geselecteerdeReiziger.getPostcode());
-        view.getTxtPlaats().setText(geselecteerdeReiziger.getPlaats());
-        view.getTxtLand().setText(geselecteerdeReiziger.getLand());
-
-        if(geselecteerdeReiziger.getHoofdreiziger() != null) {
-            view.getComboReistSamenMet().getSelectionModel().select(geselecteerdeReiziger.getHoofdreiziger());
-        }
-    }
-
-    private void clearInputsInView() {
-        geselecteerdeReiziger = null;
-        view.getTxtReizigersCode().clear();
-        view.getTxtVoornaam().clear();
-        view.getTxtAchternaam().clear();
-        view.getTxtAdres().clear();
-        view.getTxtPostcode().clear();
-        view.getTxtPlaats().clear();
-        view.getTxtLand().clear();
-        view.getComboReistSamenMet().getSelectionModel().clearSelection();
-        view.getReizigersListView().getSelectionModel().clearSelection();
-    }
-
     private void reloadData() {
-        clearInputsInView();
+        view.getReizigersListView().getSelectionModel().clearSelection();
         reizigers.setAll(getReizigerDAO().read());
     }
 
@@ -86,9 +78,6 @@ public class ReizigerController extends Controller {
         geselecteerdeReiziger = view.getReizigersListView().getSelectionModel().getSelectedItem();
         String oudeReizigerCode = geselecteerdeReiziger.getReizigerCode();
         Reiziger reiziger;
-
-        System.out.println("Oude reizigercode: " + oudeReizigerCode);
-        System.out.println("Nieuwe reizigercode: " + view.getTxtReizigersCode().getText());
 
         if (view.getComboReistSamenMet().getSelectionModel().getSelectedItem() == null) {
             reiziger = new Reiziger(
@@ -114,14 +103,14 @@ public class ReizigerController extends Controller {
             );
         }
 
-        if(geselecteerdeReiziger == null) {
+        if (geselecteerdeReiziger == null) {
             // Voeg record toe aan database en reload de data
-            if(getReizigerDAO().create(reiziger)) {
+            if (getReizigerDAO().create(reiziger)) {
                 reloadData();
             }
         } else {
             // Voeg record toe aan database en reload de data
-            if(getReizigerDAO().update(reiziger, oudeReizigerCode)) {
+            if (getReizigerDAO().update(reiziger, oudeReizigerCode)) {
                 reloadData();
             }
         }
@@ -130,11 +119,11 @@ public class ReizigerController extends Controller {
     // Verwijder record (delete) uit de database
     private void delete() {
         geselecteerdeReiziger = view.getReizigersListView().getSelectionModel().getSelectedItem();
-        if(geselecteerdeReiziger == null) {
+        if (geselecteerdeReiziger == null) {
             return;
         }
         // Verwijder record uit database en reload de data
-        if(getReizigerDAO().delete(geselecteerdeReiziger)) {
+        if (getReizigerDAO().delete(geselecteerdeReiziger)) {
             reloadData();
         }
     }
