@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `big_five_safari`.`Hotel` (
     FOREIGN KEY (`accommodatie_code`)
     REFERENCES `big_five_safari`.`Accommodatie` (`accommodatie_code`)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `big_five_safari`.`Lodge` (
     FOREIGN KEY (`accommodatie_code`)
     REFERENCES `big_five_safari`.`Accommodatie` (`accommodatie_code`)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -89,8 +89,8 @@ CREATE TABLE IF NOT EXISTS `big_five_safari`.`Reiziger` (
   CONSTRAINT `fk_Reiziger_Reiziger1`
     FOREIGN KEY (`hoofdreiziger`)
     REFERENCES `big_five_safari`.`Reiziger` (`reiziger_code`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -113,12 +113,12 @@ CREATE TABLE IF NOT EXISTS `big_five_safari`.`Reservering` (
     FOREIGN KEY (`accommodatie_code`)
     REFERENCES `big_five_safari`.`Accommodatie` (`accommodatie_code`)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION,
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_table1_Reiziger1`
     FOREIGN KEY (`reiziger_code`)
     REFERENCES `big_five_safari`.`Reiziger` (`reiziger_code`)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 USE `big_five_safari` ;
@@ -186,8 +186,8 @@ CREATE  OR REPLACE VIEW `Boekingsoverzicht` AS
 SELECT R.reservering_id, R.aankomst_datum, R.vertrek_datum, R.betaald, R.accommodatie_code,
 R.reiziger_code, CONCAT(RE.voornaam, ' ', RE.achternaam) AS reiziger, A.naam, A.stad, A.land
 FROM reservering R
-LEFT JOIN reiziger RE ON RE.reiziger_code = R.reiziger_code
-LEFT JOIN accommodatie A ON A.accommodatie_code = R.accommodatie_code
+INNER JOIN reiziger RE ON RE.reiziger_code = R.reiziger_code
+INNER JOIN accommodatie A ON A.accommodatie_code = R.accommodatie_code
 ORDER BY R.aankomst_datum;
 
 SET SQL_MODE=@OLD_SQL_MODE;
@@ -214,7 +214,7 @@ INSERT INTO `big_five_safari`.`Accommodatie` (`accommodatie_code`, `naam`, `stad
 INSERT INTO `big_five_safari`.`Accommodatie` (`accommodatie_code`, `naam`, `stad`, `land`, `kamer`, `personen`) VALUES ('LIML1', 'Immanuel Wilderness Lodge', 'Windhoek', 'Namibië', 'Tweepersoonskamer met Uitzicht op de Tuin', 2);
 INSERT INTO `big_five_safari`.`Accommodatie` (`accommodatie_code`, `naam`, `stad`, `land`, `kamer`, `personen`) VALUES ('LBBL1', 'Baby Bush Lodge', 'Kiwengwa', 'Tanzania', 'Bruidssuite met Balkon', 2);
 INSERT INTO `big_five_safari`.`Accommodatie` (`accommodatie_code`, `naam`, `stad`, `land`, `kamer`, `personen`) VALUES ('LNZL1', 'Ngoma Zanga Lodge', 'Livingstone', 'Zambia', 'Deluxe kamer met kingsize bed', 3);
-INSERT INTO `big_five_safari`.`Accommodatie` (`accommodatie_code`, `naam`, `stad`, `land`, `kamer`, `personen`) VALUES ('LML1', 'Mika Lodge', 'Lusaka', 'Zambia', 'Executive Suite', 2);
+INSERT INTO `big_five_safari`.`Accommodatie` (`accommodatie_code`, `naam`, `stad`, `land`, `kamer`, `personen`) VALUES ('LMIL1', 'Mika Lodge', 'Lusaka', 'Zambia', 'Executive Suite', 2);
 INSERT INTO `big_five_safari`.`Accommodatie` (`accommodatie_code`, `naam`, `stad`, `land`, `kamer`, `personen`) VALUES ('LIEK1', 'Impala Ecolodge', 'Kisumu', 'Kenia', 'Luxe suite', 2);
 
 COMMIT;
@@ -249,7 +249,7 @@ INSERT INTO `big_five_safari`.`Lodge` (`accommodatie_code`, `prijs_per_week`, `a
 INSERT INTO `big_five_safari`.`Lodge` (`accommodatie_code`, `prijs_per_week`, `autohuur`) VALUES ('LIML1', 788, 1);
 INSERT INTO `big_five_safari`.`Lodge` (`accommodatie_code`, `prijs_per_week`, `autohuur`) VALUES ('LBBL1', 939, 1);
 INSERT INTO `big_five_safari`.`Lodge` (`accommodatie_code`, `prijs_per_week`, `autohuur`) VALUES ('LNZL1', 899, 1);
-INSERT INTO `big_five_safari`.`Lodge` (`accommodatie_code`, `prijs_per_week`, `autohuur`) VALUES ('LML1', 1091, 1);
+INSERT INTO `big_five_safari`.`Lodge` (`accommodatie_code`, `prijs_per_week`, `autohuur`) VALUES ('LMIL1', 1091, 1);
 INSERT INTO `big_five_safari`.`Lodge` (`accommodatie_code`, `prijs_per_week`, `autohuur`) VALUES ('LIEK1', 1182, 0);
 
 COMMIT;
@@ -294,7 +294,7 @@ INSERT INTO `big_five_safari`.`Reservering` (`reservering_id`, `accommodatie_cod
 INSERT INTO `big_five_safari`.`Reservering` (`reservering_id`, `accommodatie_code`, `reiziger_code`, `aankomst_datum`, `vertrek_datum`, `betaald`) VALUES (9, 'HPHC1', 'NguyenR', '2022-07-26', '2022-07-31', 1);
 INSERT INTO `big_five_safari`.`Reservering` (`reservering_id`, `accommodatie_code`, `reiziger_code`, `aankomst_datum`, `vertrek_datum`, `betaald`) VALUES (10, 'LIEK1', 'NguyenR', '2022-08-01', '2022-08-08', 1);
 INSERT INTO `big_five_safari`.`Reservering` (`reservering_id`, `accommodatie_code`, `reiziger_code`, `aankomst_datum`, `vertrek_datum`, `betaald`) VALUES (11, 'LAAC1', 'MeijerP', '2022-08-19', '2022-08-26', 0);
-INSERT INTO `big_five_safari`.`Reservering` (`reservering_id`, `accommodatie_code`, `reiziger_code`, `aankomst_datum`, `vertrek_datum`, `betaald`) VALUES (12, 'LIML1', 'MeijerP', '2022-08-26', '2022-09-02', 0);
+INSERT INTO `big_five_safari`.`Reservering` (`reservering_id`, `accommodatie_code`, `reiziger_code`, `aankomst_datum`, `vertrek_datum`, `betaald`) VALUES (12, 'LMIL1', 'MeijerP', '2022-08-26', '2022-09-02', 0);
 
 COMMIT;
 
@@ -305,10 +305,14 @@ ADD CONSTRAINT check_vertrek_datum CHECK (vertrek_datum > aankomst_datum);
 
 # HvA FDMCI Databases 2 practicumopdracht - week 4E
 ALTER TABLE accommodatie
-ADD CONSTRAINT valide_accommodatie_code CHECK (accommodatie_code REGEXP '^.{3,4}[0-9]$');
+ADD CONSTRAINT valide_accommodatie_code CHECK (accommodatie_code REGEXP '^.{4}[0-9]$');
 
 # HvA FDMCI Databases 2 practicumopdracht - week 4F
 CREATE USER IF NOT EXISTS 'administratie'@'%' IDENTIFIED BY 'Vakantie2020';
-GRANT SELECT ON Boekingsoverzicht To 'administratie'@'%';
-GRANT EXECUTE ON PROCEDURE verwijderAccommodatie to 'administratie'@'%';
+GRANT SELECT ON big_five_safari.Boekingsoverzicht To 'administratie'@'%';
+GRANT EXECUTE ON PROCEDURE big_five_safari.verwijderAccommodatie to 'administratie'@'%';
+
+# Maak een test admin user aan voor deze practicumopdracht
+CREATE USER IF NOT EXISTS 'Testadmin'@'%' IDENTIFIED BY 'DitIsEenDummyTestAccount';
+GRANT ALL PRIVILEGES ON big_five_safari.* TO 'Testadmin'@'%';
 -- end attached script 'script'

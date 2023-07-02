@@ -4,13 +4,16 @@ import nl.hva.ict.models.Accommodatie;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * AccommodatieDAO is een abstracte class.
+ * Deze DAO is alleen bedoeld om alle accommodaties op te halen (read) uit de database.
+ * Dit wordt gebruikt bij BoekingsGeboektOpController
+ * Daarom geven we de andere methodes een return van false terug en worden ze in de child classes niet geïmplementeerd.
+ *
+ * @author HvA FDMCI HBO-ICT - Remzi Cavdar - remzi.cavdar@hva.nl
+ */
 public abstract class AccommodatieDAO implements DAO<Accommodatie> {
     protected List<Accommodatie> accommodaties = new ArrayList<>();
-
-    /* Deze DAO is alleen bedoeld om all accommodaties op te halen (read) uit de database.
-     * Dit wordt gebruikt bij BoekingsGeboektOpController
-     * Daarom geven we de andere methodes een return van false terug en worden ze in de child classes niet geïmplementeerd.
-     */
 
     @Override
     public boolean create(Accommodatie accommodatie) {

@@ -9,7 +9,7 @@ import nl.hva.ict.MainApplication;
 import org.bson.Document;
 
 /**
- * MongoDB class die de verbinding maakt met de Mongo server
+ * MongoDB class die de verbinding maakt met de MongoDB server
  * @author Pieter Leek
  */
 public class MongoDB {
@@ -28,7 +28,7 @@ public class MongoDB {
     private void connect() {
         // Heb je geen gegevens in de MainApplication staan slaat hij het maken van de verbinding over
         if (MainApplication.getMongodbHost().equals("")) {
-            System.err.println("NoSQL host is not set");
+            System.err.println("MongoDB host is not set");
             return;
         }
 

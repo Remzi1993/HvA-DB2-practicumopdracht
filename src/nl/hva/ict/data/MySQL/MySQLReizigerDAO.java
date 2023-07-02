@@ -8,6 +8,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * MySQLReizigerDAO is een class die de MySQL database connectie maakt en de CRUD-principe toepast.
+ * @author HvA FDMCI HBO-ICT - Remzi Cavdar - remzi.cavdar@hva.nl
+ */
 public class MySQLReizigerDAO extends ReizigerDAO {
     private final MySQL mysql = new MySQL();
 
@@ -33,9 +37,6 @@ public class MySQLReizigerDAO extends ReizigerDAO {
             } else {
                 ps.setString(8, reiziger.getHoofdreiziger().getReizigerCode());
             }
-
-            // Voer het uit
-            mysql.executeUpdatePreparedStatement(ps);
 
             return true;
         } catch (SQLException e) {
@@ -106,23 +107,52 @@ public class MySQLReizigerDAO extends ReizigerDAO {
             ResultSet rs = mysql.executeSelectPreparedStatement(ps);
 
             while (rs.next()) {
-                return new Reiziger(
-                        rs.getString("reiziger_code"),
-                        rs.getString("voornaam"),
-                        rs.getString("achternaam"),
-                        rs.getString("adres"),
-                        rs.getString("postcode"),
-                        rs.getString("plaats"),
-                        rs.getString("land"),
-                        null
-                );
+                if(rs.getString("hoofdreiziger") == null) {
+                    return new Reiziger(
+                            rs.getString("reiziger_code"),
+                            rs.getString("voornaam"),
+                            rs.getString("achternaam"),
+                            rs.getString("adres"),
+                            rs.getString("postcode"),
+                            rs.getString("plaats"),
+                            rs.getString("land"),
+                            null
+                    );
+                } else {
+                    // Haal de hoofdreiziger op
+                    String sql2 = "SELECT * FROM reiziger WHERE reiziger_code = ?;";
+                    PreparedStatement ps2 = mysql.getStatement(sql);
+                    ps2.setString(1, rs.getString("hoofdreiziger"));
+                    ResultSet rs2 = mysql.executeSelectPreparedStatement(ps);
+
+                    Reiziger hoofdreiziger = new Reiziger(
+                            rs2.getString("reiziger_code"),
+                            rs2.getString("voornaam"),
+                            rs2.getString("achternaam"),
+                            rs2.getString("adres"),
+                            rs2.getString("postcode"),
+                            rs2.getString("plaats"),
+                            rs2.getString("land"),
+                            null
+                    );
+
+                    return new Reiziger(
+                            rs.getString("reiziger_code"),
+                            rs.getString("voornaam"),
+                            rs.getString("achternaam"),
+                            rs.getString("adres"),
+                            rs.getString("postcode"),
+                            rs.getString("plaats"),
+                            rs.getString("land"),
+                            hoofdreiziger
+                    );
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
-
 
     @Override
     public boolean update(Reiziger reiziger, String oudeReizigerCode) {

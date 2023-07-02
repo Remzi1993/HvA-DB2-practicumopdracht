@@ -76,7 +76,6 @@ public class ReizigerController extends Controller {
     // Voeg record toe (create) of pas deze aan (update)
     private void createOrUpdate() {
         geselecteerdeReiziger = view.getReizigersListView().getSelectionModel().getSelectedItem();
-        String oudeReizigerCode = geselecteerdeReiziger.getReizigerCode();
         Reiziger reiziger;
 
         if (view.getComboReistSamenMet().getSelectionModel().getSelectedItem() == null) {
@@ -104,13 +103,13 @@ public class ReizigerController extends Controller {
         }
 
         if (geselecteerdeReiziger == null) {
-            // Voeg record toe aan database en reload de data
+            // Voeg record toe aan de database en reload de data
             if (getReizigerDAO().create(reiziger)) {
                 reloadData();
             }
         } else {
-            // Voeg record toe aan database en reload de data
-            if (getReizigerDAO().update(reiziger, oudeReizigerCode)) {
+            // Pas een record aan in de database en reload de data
+            if (getReizigerDAO().update(reiziger, geselecteerdeReiziger.getReizigerCode())) {
                 reloadData();
             }
         }

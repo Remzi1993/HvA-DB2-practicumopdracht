@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import nl.hva.ict.controllers.MainController;
 import nl.hva.ict.data.*;
 import nl.hva.ict.data.MongoDB.MongoDBLandDAO;
+import nl.hva.ict.data.MongoDB.MongoDBReizigerDAO;
 import nl.hva.ict.data.MySQL.*;
 
 /**
@@ -27,13 +28,13 @@ public class MainApplication extends Application {
     private static final String MONGODB_HOST = "mongodb+srv://remzicavdar:SJAvgrHExKJ7PMXU@cluster0.3fdaolf.mongodb.net/";
     private static final String MONGODB_DATABASE = "big_five_safari";
 
-    // DAO's
+    // DAO's - Om te switchen naar een andere DAO, pas je hieronder de classen aan:
     private static AccommodatieDAO accommodatieDAO = new MySQLAccommodatieDAO();
     private static BoekingsoverzichtDAO boekingsoverzichtDAO = new MySQLBoekingsoverzichtDAO();
     private static HotelDAO hotelDAO = new MySQLHotelDAO();
     private static LandDAO landDAO = new MongoDBLandDAO();
     private static LodgeDAO lodgeDAO = new MySQLLodgeDAO();
-    private static ReizigerDAO reizigerDAO = new MySQLReizigerDAO();
+    private static ReizigerDAO reizigerDAO = new MongoDBReizigerDAO();
 
     // JavaFX
     private static Stage stage;

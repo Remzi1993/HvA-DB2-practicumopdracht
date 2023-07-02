@@ -23,7 +23,7 @@ public class MongoDBLandDAO extends LandDAO {
     // TODO: Implementeren van deze methode
     @Override
     public List<Land> read() {
-        return null;
+        return landen;
     }
 
     // TODO: Implementeren van deze methode
@@ -45,7 +45,6 @@ public class MongoDBLandDAO extends LandDAO {
      * @param alleenAfrika filter het resultaat zodat wel of niet alleen afrikaanse landen terug komen
      */
     public void wieSpreekt(String taal, boolean alleenAfrika) {
-
         // Als je geen NoSQL server hebt opgegeven gaat de methode niet verder anders zou je een nullpointer krijgen
         if (MainApplication.getMongodbHost().equals(""))
             return;
@@ -59,13 +58,11 @@ public class MongoDBLandDAO extends LandDAO {
         // Aggregation functie in Mongo
         Bson match = match(eq("languages.name", taal));
 
-        List<Document> results = mongoDB.collection.aggregate(Arrays.asList(match))
-                .into(new ArrayList<>());
+        List<Document> results = mongoDB.collection.aggregate(List.of(match)).into(new ArrayList<>());
 
         // Maak models en voeg resultaat toe aan arraylist
         for (Document land : results) {
             landen.add(new Land(land.get("name").toString(), land.get("capital").toString()));
-
         }
     }
 

@@ -9,14 +9,14 @@ import nl.hva.ict.models.Land;
 
 public class LandView extends View {
     private final GridPane rootPane;
-    private final ComboBox comboBox;
+    private final ComboBox<String> comboBox;
     private final ListView<Land> landenInformatieListView;
     private final CheckBox checkBox;
     private final TextArea textArea;
 
     public LandView() {
         this.rootPane = new GridPane();
-        this.comboBox = new ComboBox();
+        this.comboBox = new ComboBox<>();
         this.checkBox = new CheckBox();
         this.textArea = new TextArea();
         this.landenInformatieListView = new ListView<>();
@@ -51,7 +51,7 @@ public class LandView extends View {
         return landenInformatieListView;
     }
 
-    public ComboBox getComboBox() {
+    public ComboBox<String> getComboBox() {
         return comboBox;
     }
 
